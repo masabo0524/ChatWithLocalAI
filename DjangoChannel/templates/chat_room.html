@@ -1,0 +1,6 @@
+{% for room in rooms %}
+<p>{{room.id}}:<p>
+{% for member in room.member.all %}
+<p>{{member.member}}</p>
+{% endfor %}
+{% endfor %}

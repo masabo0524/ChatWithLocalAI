@@ -23,7 +23,15 @@
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
-            document.querySelector('#chat-log').value += (data.message + '\n');
+	    if(data.isMessage === true)
+	    {
+		if(data.message.sender === "AI"){
+		    document.querySelector('#chat-log').value += (data.message.context + '\n');	
+		}else{
+		    document.querySelector('#chat-log').value += (data.message.context + '\n');
+		}
+	    }
+            // document.querySelector('#chat-log').value += (data.message + '\n');
         };
 
         chatSocket.onclose = function(e) {
