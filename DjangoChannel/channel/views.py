@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.views.generic.edit import CreateView
+from django.views.generic.base import TemplateView
 from django.contrib.auth.views import LoginView as OfficialLogin
 from django.views.generic.list import ListView
 from django.shortcuts import redirect
@@ -15,9 +16,16 @@ User = get_user_model()
 def index(request):
     return render(request, "index.html")
 
-def room(request, room_name):
-    return render(request, 'room.html', {"room_name": room_name})
+def room(request, room_id):
+    return render(request, 'room.html', {"room_id": room_id})
 
+
+class HomeView(TemplateView):
+    template_name = "top_page.html"
+
+    # def get_context_data(self, **kwargs):
+    #     pass
+        
 
 class SignUpView(CreateView):
     form_class = SignUpForm

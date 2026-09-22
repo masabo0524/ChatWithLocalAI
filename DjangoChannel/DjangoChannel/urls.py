@@ -16,9 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from channel.views import SignUpView, LoginView
+from channel.views import SignUpView, LoginView, HomeView
 
 urlpatterns = [
+    path('', HomeView.as_view(), name="top_page"),
     path('admin/', admin.site.urls),
     path('chat/', include("channel.urls")),
     path('signup/', SignUpView.as_view(), name="signup"),

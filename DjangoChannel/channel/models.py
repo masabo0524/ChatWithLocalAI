@@ -80,6 +80,7 @@ class Message(models.Model):
     at_received = models.DateTimeField(editable=True, null=False, blank=False)
     sender = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="message")
     context = models.TextField()
+    reply_byAI = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.sender}"

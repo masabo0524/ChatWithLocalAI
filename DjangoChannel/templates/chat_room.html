@@ -1,6 +1,9 @@
 {% for room in rooms %}
 <p>{{room.id}}:<p>
-{% for member in room.member.all %}
+  <a href="{% url "channel:room" room.id %}">
+    {{room.room_name}}
+  </a>
+  {% for member in room.member.all %}
 <p>{{member.member}}</p>
 {% endfor %}
 {% endfor %}
