@@ -3,11 +3,14 @@ from django.views.generic.edit import CreateView
 from django.views.generic.base import TemplateView
 from django.contrib.auth.views import LoginView as OfficialLogin
 from django.views.generic.list import ListView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
+from django.http import HttpResponseRedirect
+from django.db import transaction
 from django.contrib.auth import get_user_model
 
-from .forms import SignUpForm, LoginForm
+from .forms import SignUpForm, LoginForm, AddRoomForm
 from .models import ChatRoom, RoomMember
 
 User = get_user_model()
@@ -23,9 +26,24 @@ def room(request, room_id):
 class HomeView(TemplateView):
     template_name = "top_page.html"
 
-    # def get_context_data(self, **kwargs):
-    #     pass
+
+class NewRoom(LoginRequiredMixin, CreateView):
+    template_name = "add_room.html"
+    form_class = AddRoomForm
+    success_url = reverse_lazy("channel:roomlist")
+
+    def form_valid(self, form):
+        with transaction.atomic():
+            self.object = form.save()
+
+            RoomMember.objects.create(
+                room=self.object,
+                member=self.request.user
+            )
+
+        return HttpResponseRedirect(self.get_success_url())
         
+
 
 class SignUpView(CreateView):
     form_class = SignUpForm

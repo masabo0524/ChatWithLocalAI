@@ -1,6 +1,9 @@
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.forms.models import ModelForm
 
 from django.contrib.auth import get_user_model
+
+from .models import ChatRoom, RoomMember
 
 User = get_user_model();
 
@@ -21,3 +24,11 @@ class SignUpForm(UserCreationForm):
     
 class LoginForm(AuthenticationForm):
     pass
+
+
+class AddRoomForm(ModelForm):
+    
+    class Meta:
+        model = ChatRoom
+        fields = ["room_name"]
+

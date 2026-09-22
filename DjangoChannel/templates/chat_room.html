@@ -1,9 +1,16 @@
 {% for room in rooms %}
-<p>{{room.id}}:<p>
+<h2>
   <a href="{% url "channel:room" room.id %}">
     {{room.room_name}}
   </a>
+</h2>
+<ul>
   {% for member in room.member.all %}
-<p>{{member.member}}</p>
+  <li>
+    <p>{{member.member}}</p>
+  </li>
 {% endfor %}
+</ul>
 {% endfor %}
+
+<a href="{% url 'channel:add_room' %}">+Create New Room</a>
