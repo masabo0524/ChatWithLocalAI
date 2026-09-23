@@ -8,6 +8,7 @@
 <body>
     <textarea id="chat-log" cols="100" rows="20"></textarea><br>
     <input id="chat-message-input" type="text" size="100"><br>
+    <p>Ask AI?<input id="ask-ai-input" type="checkbox"></p>
     <input id="chat-message-submit" type="button" value="Send">
     {{ room_id|json_script:"room-id" }}
     <script>
@@ -48,8 +49,13 @@
         document.querySelector('#chat-message-submit').onclick = function(e) {
             const messageInputDom = document.querySelector('#chat-message-input');
             const message = messageInputDom.value;
+
+	    const askAIInput = document.querySelector('#ask-ai-input');
+	    const isAskAI = askAIInput.checked;
+	    
             chatSocket.send(JSON.stringify({
-                'message': message
+                'message': message,
+		'isAskAI': isAskAI
             }));
             messageInputDom.value = '';
         };
