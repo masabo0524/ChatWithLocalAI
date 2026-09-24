@@ -61,9 +61,8 @@ class ChatConsumer(WebsocketConsumer):
                                             {"context": response.message.content, "sender": "AI", "time": sending_time_format, "fromMe": False }}))
             sending_message = Message(room=self.room_instance, at_received=received_time, sender=self.user, context=response.message.content, reply_byAI=True)
             sending_message.save()
-            self.send(text_data=json.dumps({"isMessage": False, "status": "wait4you"}))
-        else:
-            self.send(text_data=json.dumps({"isMessage": False, "status": "wait4you"}))
+        self.send(text_data=json.dumps({"isMessage": False, "status": "wait4you"}))
+
 
     def chat_message(self, event):
         message = event["message"]

@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, FormView
 from django.views.generic.base import TemplateView
 from django.contrib.auth.views import LoginView as OfficialLogin
 from django.views.generic.list import ListView
@@ -10,8 +10,8 @@ from django.http import HttpResponseRedirect
 from django.db import transaction
 from django.contrib.auth import get_user_model
 
-from .forms import SignUpForm, LoginForm, AddRoomForm
-from .models import ChatRoom, RoomMember
+from .forms import SignUpForm, LoginForm, AddRoomForm, AddMemberForm
+from .models import ChatRoom, RoomMember, InvitationToken
 
 User = get_user_model()
 
@@ -66,3 +66,31 @@ class ListRoom(ListView):
         qs = super().get_queryset()
         qs = qs.filter(member__member=self.request.user)
         return qs
+
+
+class AddMember(FormView):
+    form_class = AddMemberForm
+    template_name = "add_member.html"
+
+
+    def get_success_url(self):
+        return reverse_lazy("channel:room", kwargs={"room_id": self.room_id})
+
+    def form_valid(self, form):
+        invitation_token = self.request.POST['token']
+        user = InvitationToken.objects.approveUser(invitation_token)
+        self.room_id = self.kwargs.get("room_id")
+        room_obj = ChatRoom.objects.get(id=self.room_id)
+        RoomMember.objects.create(room=room_obj, member=user)
+        return super().form_valid(form)
+        
+
+class IssueInvitation(CreateView):
+
+    def get(self,*args, **kwargs):
+        if not self.request.user.is_authenticated:
+            return render(request, "403.html", {error: "login required."})
+        invitation = InvitationToken.objects.issueInvitation(user=self.request.user)
+        context = {"invitation": invitation}
+        return render(self.request, "issue_invitation.html", context=context)
+        

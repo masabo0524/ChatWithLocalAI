@@ -10,6 +10,9 @@
     <input id="chat-message-input" type="text" size="100"><br>
     <p>Ask AI?<input id="ask-ai-input" type="checkbox"></p>
     <input id="chat-message-submit" type="button" value="Send">
+    <p>
+      <a href="{% url 'channel:add_member' room_id=room_id %}">Add A New Member</a>
+    </p>
     {{ room_id|json_script:"room-id" }}
     <script>
         const roomId = JSON.parse(document.getElementById('room-id').textContent);
@@ -32,7 +35,6 @@
 		    document.querySelector('#chat-log').value += (data.message.context + '\n');
 		}
 	    }
-            // document.querySelector('#chat-log').value += (data.message + '\n');
         };
 
         chatSocket.onclose = function(e) {

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.admin import ModelAdmin
-from .models import CustomUser, ChatRoom, RoomMember, Message
+from .models import CustomUser, ChatRoom, RoomMember, Message, InvitationToken
 
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
@@ -57,3 +57,7 @@ class ChatRoomAdmin(ModelAdmin):
     fields = ["room_name", "id",]
     readonly_fields = ["id"]
     inlines = [MemberInline, MessageInline]
+
+@admin.register(InvitationToken)
+class InvitationAdmin(ModelAdmin):
+    pass

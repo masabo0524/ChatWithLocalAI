@@ -1,5 +1,6 @@
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.forms.models import ModelForm
+from django import forms
 
 from django.contrib.auth import get_user_model
 
@@ -32,3 +33,7 @@ class AddRoomForm(ModelForm):
         model = ChatRoom
         fields = ["room_name"]
 
+class AddMemberForm(forms.Form):
+    token = forms.UUIDField()
+    
+    
