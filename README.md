@@ -13,3 +13,7 @@
 * npm run dev
 5. Access to the page
 * Open a browser and type "localhost:5173"
+
+## features I want to add
+### React
+* websocket connection indicator

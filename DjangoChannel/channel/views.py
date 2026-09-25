@@ -48,13 +48,13 @@ class NewRoom(LoginRequiredMixin, CreateView):
 class SignUpView(CreateView):
     form_class = SignUpForm
     template_name = "signup.html"
-    success_url = reverse_lazy("channel:index")
+    success_url = reverse_lazy("top_page")
 
 
 class LoginView(OfficialLogin):
     form_class = LoginForm
     template_name = "login.html"
-    next_page = reverse_lazy("channel:index")
+    next_page = reverse_lazy("top_page")
 
 
 class ListRoom(ListView):
