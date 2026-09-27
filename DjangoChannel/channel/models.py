@@ -8,7 +8,7 @@ from datetime import timedelta
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, username, email, password):
+    def create_user(self, username, email, password, birthday):
         if not email:
             raise ValueError('Please Enter your email')
         if not password:
@@ -19,6 +19,7 @@ class UserManager(BaseUserManager):
         user = self.model(
             username=username,
             email=email,
+            birthday=birthday,
             is_superuser=False,
             is_staff=False,
             is_active=True,
