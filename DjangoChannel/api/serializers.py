@@ -1,14 +1,14 @@
 from rest_framework import serializers
-from django.contrib.auth import get_user_model, password_validation
+from django.contrib.auth import get_user_model, password_validation, authenticate
 from django.core.exceptions import ValidationError
-
+from rest_framework_simplejwt import tokens as jwt_tokens
 
 User = get_user_model()
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
 
-    confirm_password = serializers.CharField(max_length=128, write_only=True)
+    confirm_password = serializers.CharField(max_length=128, write_only=True, style={"input_type": "password"})
     
     def validate_password_not_contain_username(self, password, username):
         if username.lower() in password.lower():
@@ -42,6 +42,24 @@ class CustomUserSerializer(serializers.ModelSerializer):
         fields = ["username", "birthday", "email", "password", "confirm_password"]
         extra_kwargs = {
             'password': {
-                'write_only': True
+                'write_only': True,
+                "style": {
+                    "input_type": "password",
+                }
             },
         }
+
+
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField(write_only=True)
+    password = serializers.CharField(write_only=True, style={"input_type": "password"})
+
+    def validate(self, data):
+        credentials = {"username": data["username"],
+                       "password": data["password"]}
+        self.user = authenticate(**credentials)
+        if self.user is None:
+            raise ValidationError("Authentication failed.")
+        tokens = jwt_tokens.RefreshToken.for_user(self.user)
+        print(type(tokens.access_token))
+        return ()
