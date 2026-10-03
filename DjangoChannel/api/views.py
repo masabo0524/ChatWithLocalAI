@@ -11,11 +11,13 @@ from rest_framework_simplejwt import tokens as jwt_tokens
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 
 from django.contrib.auth import get_user_model
+from django.conf import settings
 
 from .serializers import (
     CustomUserSerializer,
     LoginSerializer,
 )
+from .authentication import CustomJWTAuthentication
 
 
 class CreateUserView(generics.CreateAPIView):
@@ -56,11 +58,15 @@ class SetTokensCookieView(jwt_views.TokenObtainPairView):
         res.set_cookie(key="access",
                        value=access_token,
                        expires=exp_access_token,
-                       httponly=True)
+                       httponly=True,
+                       secure=not settings.DEBUG,
+                       samesite='Lax')
         res.set_cookie(key="refresh",
                        value=refresh_token,
                        expires=exp_refresh_token,
-                       httponly=True)
+                       httponly=True,
+                       secure=not settings.DEBUG,
+                       samesite='Lax')
 
         return res
 
@@ -93,7 +99,9 @@ class RefreshCookieView(jwt_views.TokenRefreshView):
         res.set_cookie(key="access",
                        value=access_token,
                        expires=exp_access_token,
-                       httponly=True)
+                       httponly=True,
+                       secure=not settings.DEBUG,
+                       samesite='Lax')
         return res
 
 
@@ -106,3 +114,17 @@ class DeleteTokenView(views.APIView):
         res.delete_cookie(key="refresh")
         res.delete_cookie(key="access")
         return res
+
+
+class JWTBaseView(views.APIView):
+
+    http_method_names = ["get"]
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        dict = {"username": user.username,
+                "id": user.id,
+                "email": user.email}
+        return Response(dict, status=status.HTTP_200_OK)
+
+    
