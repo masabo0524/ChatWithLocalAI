@@ -29,6 +29,10 @@ ALLOWED_HOSTS = ["*"]
 
 CORS_ALLOW_ALL_ORIGINS = True
 
+CSRF_TRUSTED_ORIGINS = [
+    
+]
+
 
 # Application definition
 
@@ -63,7 +67,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
+    # 'api.csrf4jwt.Csrf4JWTMiddleware',
 ]
 
 ROOT_URLCONF = 'DjangoChannel.urls'

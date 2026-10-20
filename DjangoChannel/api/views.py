@@ -11,15 +11,26 @@ from rest_framework_simplejwt import tokens as jwt_tokens
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 
 from django.contrib.auth import get_user_model
+from django.utils.decorators import method_decorator
 from django.conf import settings
+from django.http import JsonResponse
+from django.middleware.csrf import get_token
+from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
 
 from .serializers import (
     CustomUserSerializer,
     LoginSerializer,
+    TestSerializer,
 )
 from .authentication import CustomJWTAuthentication
 
 
+@ensure_csrf_cookie
+def get_csrf_token(request):
+    return JsonResponse({"csrfToken": "CSRF cookie set"})
+
+
+@method_decorator(csrf_protect, name="dispatch")
 class CreateUserView(generics.CreateAPIView):
     serializer_class = CustomUserSerializer
     queryset = get_user_model().objects.all()
@@ -33,6 +44,7 @@ class CreateUserView(generics.CreateAPIView):
         # return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
+@method_decorator(csrf_protect, name="dispatch")
 class SetTokensCookieView(jwt_views.TokenObtainPairView):
 
     def post(self, request, *args, **kwargs):
@@ -122,9 +134,7 @@ class JWTBaseView(views.APIView):
 
     def get(self, request, *args, **kwargs):
         user = request.user
-        dict = {"username": user.username,
-                "id": user.id,
-                "email": user.email}
-        return Response(dict, status=status.HTTP_200_OK)
+        serializer = TestSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     

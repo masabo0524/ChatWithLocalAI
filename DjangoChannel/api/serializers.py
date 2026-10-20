@@ -63,3 +63,9 @@ class LoginSerializer(serializers.Serializer):
         tokens = jwt_tokens.RefreshToken.for_user(self.user)
         print(type(tokens.access_token))
         return ()
+
+
+class TestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = get_user_model()
+        fields = "__all__"
